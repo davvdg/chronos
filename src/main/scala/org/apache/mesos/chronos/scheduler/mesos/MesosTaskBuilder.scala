@@ -90,9 +90,10 @@ class MesosTaskBuilder @Inject()(val conf: SchedulerConfiguration) {
 
     val fetch = job.fetch ++ job.uris.map { Fetch(_) }
     val uriCommand = fetch.map { f =>
+      val extract = f.uri.endsWith("tar.gz")
       CommandInfo.URI.newBuilder()
         .setValue(f.uri)
-        .setExtract(f.extract)
+        .setExtract(extract)
         .setExecutable(f.executable)
         .setCache(f.cache)
         .build()
