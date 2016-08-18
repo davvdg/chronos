@@ -26,6 +26,9 @@ function(Backbone,
   }
 
   DependentJobModel = BaseJobModel.extend({
+    constructor: function DependentJobModel() {
+        BaseJobModel.prototype.constructor.apply(this, arguments);
+    },
     url: function(action) {
       return BaseJobModel.prototype.url.call(this, action) ||
         'scheduler/dependency';

@@ -8,6 +8,9 @@ define(['backbone', 'underscore', 'models/base_job'],
   var JobModel;
 
   JobModel = BaseJobModel.extend({
+    constructor: function JobModel() {
+        BaseJobModel.prototype.constructor.apply(this, arguments);
+    },
     isNew: function() {
       return true;
     },

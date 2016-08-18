@@ -65,7 +65,7 @@ function(Backbone,
   });
 
   ScheduledJobModel = BaseJobModel.extend({
-    constructor: function(attrs, options) {
+    constructor: function ScheduledJobModel(attrs, options) {
       BaseJobModel.prototype.constructor.call(this, attrs, options);
     },
 

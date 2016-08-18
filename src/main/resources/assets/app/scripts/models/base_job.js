@@ -6,9 +6,18 @@ define([
   'backbone',
   'underscore',
   'moment',
-  'validations/base_job'
-],
-function($, Backbone, _, moment, BaseJobValidations) {
+  'validations/base_job',
+  'collections/fetchs',
+  'models/container/container_model'
+],function(
+  $, 
+  Backbone, 
+  _, 
+  moment, 
+  BaseJobValidations, 
+  FetchCollection, 
+  ContainerModel
+) {
 
   'use strict';
 
@@ -26,10 +35,13 @@ function($, Backbone, _, moment, BaseJobValidations) {
 
   BaseWhiteList = [
     'name', 'command', 'description', 'owner', 'ownerName', 'async', 'epsilon', 'executor',
-    'disabled', 'softError', 'cpus', 'mem', 'disk', 'highPriority'
+    'disabled', 'softError', 'cpus', 'mem', 'disk', 'highPriority', 'container', 'fetch'
   ];
 
   BaseJobModel = Backbone.Model.extend({
+    constructor: function BaseJobModel() {
+        Backbone.Model.prototype.constructor.apply(this, arguments);
+    },
     defaults: function() {
       var d = new Date();
       return {
@@ -51,7 +63,10 @@ function($, Backbone, _, moment, BaseJobValidations) {
         persisted: false,
         async: false,
         disabled: false,
-        softError: false
+        softError: false,
+        useContainer: false,
+        container: null,
+        fetch: new FetchCollection(),
       };
     },
 
@@ -64,6 +79,7 @@ function($, Backbone, _, moment, BaseJobValidations) {
     },
 
     initialize: function() {
+
       this.bindings();
       this.trigger('add');
 
@@ -83,6 +99,33 @@ function($, Backbone, _, moment, BaseJobValidations) {
         'change:lastRunStatus': this.updateLastRunInfo
       });
     },
+
+    set: function(key, val, options) {
+      var attrs;
+      if (typeof key === 'object') {
+        attrs = key;
+        options = val;
+      } else {
+        (attrs = {})[key] = val;
+      }
+      if (attrs["container"]) {
+        this.attributes.container = new ContainerModel(attrs["container"]);
+        delete attrs["container"];
+      }
+      if (attrs["fetch"]) {
+        if (this.attributes.fetch === undefined) {
+          this.attributes.fetch = new FetchCollection();  
+        }
+        this.attributes.fetch = new FetchCollection();
+        this.attributes.fetch.set(attrs["fetch"]);
+        delete attrs["fetch"];
+      }      
+      return Backbone.Model.prototype.set.apply(this, [
+        attrs,
+        options
+      ]);
+    },
+
 
     fetchStats: function() {
       var url = Route('scheduler', 'job', 'stat', this.get('name')),
@@ -178,12 +221,16 @@ function($, Backbone, _, moment, BaseJobValidations) {
       }
 
       baseJSON = this.toData();
+      console.log(baseJSON);
       return _.pick.apply(null, ([baseJSON]).concat(this.getWhitelist()));
     },
 
     toData: function() {
       var data = Backbone.Model.prototype.toJSON.call(this);
-
+      if (data["container"]) {
+        data["container"] = this.get("container").toJSON();
+      }
+      data["fetch"] = this.get("fetch").toJSON();
       return _.extend({}, data, {
         cid: this.cid,
         parentsList: this.get('parents').join(', '),
