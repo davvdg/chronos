@@ -109,7 +109,7 @@ define([
         (attrs = {})[key] = val;
       }
       if (attrs["container"]) {
-        this.attributes.container = new ContainerModel(attrs["container"]);
+        this.attributes.container = new ContainerModel(attrs["container"], options);
         delete attrs["container"];
       }
       if (attrs["fetch"]) {
@@ -117,7 +117,7 @@ define([
           this.attributes.fetch = new FetchCollection();  
         }
         this.attributes.fetch = new FetchCollection();
-        this.attributes.fetch.set(attrs["fetch"]);
+        this.attributes.fetch.set(attrs["fetch"], options);
         delete attrs["fetch"];
       }      
       return Backbone.Model.prototype.set.apply(this, [
@@ -227,6 +227,7 @@ define([
 
     toData: function() {
       var data = Backbone.Model.prototype.toJSON.call(this);
+      console.log(data);
       if (data["container"]) {
         data["container"] = this.get("container").toJSON();
       }

@@ -60,7 +60,7 @@ function($,
   }
 
   MixableView = Backbone.View.extend({
-    constructor: function() {
+    constructor: function MixableView() {
       ctor.apply(this, Array.prototype.slice.call(arguments));
       set(this, 'methodChains', {});
     }

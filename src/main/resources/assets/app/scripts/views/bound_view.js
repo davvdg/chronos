@@ -27,6 +27,10 @@ function($,
   }
 
   var BoundView = View.extend({
+    constructor: function BoundView() {
+      View.prototype.constructor.apply(this, arguments);
+    },
+
     getBindModels: function() {
       return _.pick(this, 'model', 'collection');
     },

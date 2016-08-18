@@ -1,5 +1,7 @@
 /**
  * Results Header View
+ * This view provides the header of the job list view (not the detailed view).
+ * This view allows job sorting.
  */
 define([
   'jquery',

@@ -7,6 +7,8 @@ define([
   'views/job_detail_header_view',
   'views/job_detail_stats',
   'views/job_detail_history',
+  'views/container/container_view',
+  'views/fetchs_view',
   'views/bound_view',
   'components/tooltip_view',
   'components/fuzzy_select2',
@@ -27,6 +29,8 @@ function($,
          JobDetailHeaderView,
          JobDetailStatsView,
          JobDetailHistoryView,
+         ContainerView,
+         FetchsView,
          BoundView,
          TooltipView,
          FuzzySelect2,
@@ -61,6 +65,9 @@ function($,
   }
 
   JobDetailView = BoundView.extend({
+    constructor: function JobDetailView() {
+      BoundView.prototype.constructor.apply(this, arguments);
+    },
 
     mixins: {
       tooltips: TooltipView.InstanceMethods
@@ -94,10 +101,15 @@ function($,
         invalid: this.renderInvalid,
         save: this.save
       });
-
+      this.containerView = null;
+      if (this.model.get("container") !== null) {
+        this.containerView=new ContainerView({model:this.model.get("container")});
+      }
+      //this.listenTo(this.model, {"change:container": this.changeContainerView});
       this.addRivets();
       this.addTooltips();
       this.$('.collapse').collapse();
+
     },
 
     remove: function() {
@@ -112,6 +124,13 @@ function($,
       };
     },
 
+    changeContainerView: function(msgmodel) {
+      if (this.containerView === null) {
+        this.containerView=new ContainerView({model:msgmodel.get("container")});
+        this.render();
+      }
+    },
+
     render: function() {
       var data = this.model.toData();
       data.cid = this.model.cid;
@@ -122,6 +141,8 @@ function($,
       this.addRivets();
       this.renderHeader();
       this.renderParents();
+      this.renderContainer();
+      this.renderFetchs();
       this.renderStats();
       this.renderJobHistory();
       this.trigger('render');
@@ -132,6 +153,7 @@ function($,
 
       return this;
     },
+
 
     renderInvalid: function(model, errors) {
       var errorData = { save: true };
@@ -145,7 +167,24 @@ function($,
       this.renderMessage('error', JobPersistenceErrorTpl, errorData);
       return this;
     },
+    renderContainer: function() {
+      if (this.containerView!==null) {
+        var view = this.containerView;
+        console.log(view);
+        return view.setElement(this.$('.job-detail-container-view')).render();
+      }
+    },
+    renderFetchs: function() {
+      var view = this.fetchsView;
+      if (!view) {
+        view = new FetchsView({
+          collection: this.model.get("fetch")
+        });
 
+        this.fetchsView = view;        
+      }
+      return view.setElement(this.$('.job-detail-fetch-list-view')).render();
+    },    
     renderHeader: function() {
       var view = this.headerView;
       if (!view) {
