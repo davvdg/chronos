@@ -1,69 +1,87 @@
-<div class="row-fluid job-detail-row">
-  <div>
-    <div class="row-fluid">
-      <div class="control-group job-detail"
-           data-toggle="tooltip"
-           data-title="Container type"
-           data-html="true"
-           data-placement="bottom">
-        <div class="detail">Type</div>
-        <div class="display hightlight owner" >{{type}}</div>
-        <div class="field cmd">
-          <input class="job-input" value="{{type}}" name="type" tabindex="5" >
+<div><div id="collapse-{{cid}}">
+  <div class="row-fluid control-group job-detail-row" >
+    
+      <div class="row-fluid">
+        <div class="control-group job-detail"
+             data-toggle="tooltip"
+             data-title="Container type"
+             data-html="true"
+             data-placement="bottom">
+          <div class="detail">Container Type</div>
+          <div class="display hightlight owner" >{{type}}</div>
+          <div class="field cmd">
+            <input class="job-input" data-rv-value="model.type" value="{{type}}" name="type" tabindex="5" >
+          </div>
+          <span class="help-inline hide"></span>
         </div>
-        <span class="help-inline hide"></span>
       </div>
-    </div>
 
-    <div class="row-fluid">
-      <div class="control-group job-detail"
-           data-toggle="tooltip"
-           data-title="Container image"
-           data-html="true"
-           data-placement="bottom">
-        <div class="detail">Image</div>
-        <div class="display hightlight owner" >{{image}}</div>
-        <div class="field cmd">
-          <input class="job-input" value="{{image}}" name="type" tabindex="5" >
+      <div class="row-fluid">
+        <div class="control-group job-detail"
+             data-toggle="tooltip"
+             data-title="Container image"
+             data-html="true"
+             data-placement="bottom">
+          <div class="detail">Container Image</div>
+          <div class="display hightlight owner" data-rv-text="model.image">{{image}}</div>
+          <div class="field cmd">
+            <input class="job-input" data-rv-value="model.image" value="{{image}}" name="image" tabindex="5" >
+          </div>
+          <span class="help-inline hide"></span>
         </div>
-        <span class="help-inline hide"></span>
       </div>
-    </div>
-    <div class="row-fluid">
-      <div class="control-group job-detail"
-           data-toggle="tooltip"
-           data-title="Container image"
-           data-html="true"
-           data-placement="bottom">
-        <div class="detail">Force Pull Image</div>
-        <div class="display hightlight owner" >{{forcePullImage}}</div>
-        <div class="field cmd">
-          <input class="job-input" value="{{forcePullImage}}" name="type" tabindex="5" >
+      <div class="row-fluid">
+        <div class="control-group job-detail"
+             data-toggle="tooltip"
+             data-title="Container image"
+             data-html="true"
+             data-placement="bottom">
+            <div class="detail ">Force Pull Image
+              <input class="display pull-right" type="checkbox" id="{{cid}}_forcePullImage" data-rv-checked="model.forcePullImage" checked="{{forcePullImage}}" disabled />
+              <input class="field pull-right" type="checkbox" id="{{cid}}_forcePullImage" data-rv-checked="model.forcePullImage" checked="{{forcePullImage}}" />
+            </div>
+          <span class="help-inline hide"></span>
         </div>
-        <span class="help-inline hide"></span>
       </div>
+      <div class="row-fluid">
+        <div class="control-group job-detail"
+             data-toggle="tooltip"
+             data-title="Container image"
+             data-html="true"
+             data-placement="bottom">
+          <div class="detail">Container Parameters</div>
+          <div>
+              <div>
+                <div class="span3">
+                  <div>key</div>
+                </div>
+                <div class="span9">
+                  <div>value</div>
+                </div>
+              </div>
+            <ul class="container-parameter-list unstyled"></ul>
+          </div>
+          <span class="help-inline hide"></span>
+        </div>
+      </div>
+      <div class="row-fluid">
+        <div class="control-group job-detail"
+             data-toggle="tooltip"
+             data-title="Container image"
+             data-html="true"
+             data-placement="bottom">
+          <div class="detail">Container Volumes</div>
+          <div class="container-volume-list" ></div>        
+          <span class="help-inline hide"></span>
+        </div>
+      </div>    
+    
+  </div></div>
+  <div class="job-detail-row job-detail">
+    <div>
+      <a data-toggle="collapse" type="button" expanded="true" data-target="#collapse-{{cid}}" href="javascript:void(0)">
+          Container
+      </a>
     </div>
-    <div class="row-fluid">
-      <div class="control-group job-detail"
-           data-toggle="tooltip"
-           data-title="Container image"
-           data-html="true"
-           data-placement="bottom">
-        <div class="detail">Parameters</div>
-        <ul class="container-parameter-list"></ul>        
-        <span class="help-inline hide"></span>
-      </div>
-    </div>
-    <div class="row-fluid">
-      <div class="control-group job-detail"
-           data-toggle="tooltip"
-           data-title="Container image"
-           data-html="true"
-           data-placement="bottom">
-        <div class="detail">Volumes</div>
-        <div class="container-volume-list" ></div>        
-        <span class="help-inline hide"></span>
-      </div>
-    </div>    
   </div>
 </div>

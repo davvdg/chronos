@@ -2,7 +2,7 @@ define([
   'jquery',
   'views/fetch_view',
   'components/mixable_view',
-  'components/parent_view'
+  'components/parent_view',
 ],
 function($,
          FetchView,

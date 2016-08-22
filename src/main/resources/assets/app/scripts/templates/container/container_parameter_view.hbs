@@ -1,5 +1,19 @@
 
 	<li>
-		<div class="span3 key">{{key}}</div>
-		<div class="span9 key">{{value}}</div>
+		<div class="display">
+			<div class="span3">
+				<div data-rv='model.key'>{{key}}</div>
+			</div>
+			<div class="span9">
+				<div data-rv='model.value'>{{value}}</div>
+			</div>
+		</div>
+      	<div class="field">
+      		<div class="span3">
+				<input class="job-input" value="{{key}}" data-rv='model.key' name="key">
+			</div>
+			<div class="span9">
+				<input class="job-input" value="{{value}}" data-rv='model.value' name="value">
+			</div>
+      	</div>
 	</li>

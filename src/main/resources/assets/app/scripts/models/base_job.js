@@ -35,15 +35,27 @@ define([
 
   BaseWhiteList = [
     'name', 'command', 'description', 'owner', 'ownerName', 'async', 'epsilon', 'executor',
-    'disabled', 'softError', 'cpus', 'mem', 'disk', 'highPriority', 'container', 'fetch'
+    'disabled', 'softError', 'cpus', 'mem', 'disk', 'highPriority', 'container', 'fetch', 'useContainer',
   ];
 
   BaseJobModel = Backbone.Model.extend({
     constructor: function BaseJobModel() {
         Backbone.Model.prototype.constructor.apply(this, arguments);
     },
+    nestedKeys: {
+      container: {
+        type: "optional",
+        model: ContainerModel,
+      },
+      fetch: {
+        type: "optional",
+        model: FetchCollection,
+      },
+    },
     defaults: function() {
       var d = new Date();
+
+      
       return {
         name: '-',
         owner: '',
@@ -65,6 +77,7 @@ define([
         disabled: false,
         softError: false,
         useContainer: false,
+        hasContainer: false,
         container: null,
         fetch: new FetchCollection(),
       };
@@ -82,7 +95,14 @@ define([
 
       this.bindings();
       this.trigger('add');
+      /*
+      var that = this;
+      setInterval(function() {
 
+        that.set("useContainer", !that.get("useContainer"));
+      }, 1000);
+      console.log(this);
+      */
       return this;
     },
 
@@ -96,21 +116,92 @@ define([
         'change:startTime': this.updateSchedule,
         'change:startDate': this.updateSchedule,
         'change:duration': this.updateSchedule,
-        'change:lastRunStatus': this.updateLastRunInfo
+        'change:lastRunStatus': this.updateLastRunInfo,
+        'change:useContainer':this.onChangeUseContainer,
+        'change:hasContainer':this.onChangeHasContainer
       });
     },
+    parse: function(resp, options) {
+      console.log("parsing object");
+      return resp;
+    },
+    set: function(attrName, attrVal, options) {
+      var attrs;
+      if (typeof attrName === 'object') {
+        attrs = _.clone(attrName);
+        options = attrVal;
+      } else {
+        (attrs = {})[attrName] = attrVal;
+      }
+      var self = this;
 
+      Object.keys(this.nestedKeys).forEach(function (key) {
+        if (key in attrs) {
+          
+          self.updateNestedModels(key, attrs[key], options);
+          if (key === "container") {
+            attrs["useContainer"] = true;
+          } 
+          delete attrs[key];
+        }
+      });
+      
+      return Backbone.Model.prototype.set.call(this, attrs, options);
+    },
+
+    updateNestedModels : function(key, attrs, options) {
+      var currentmodel = this.get(attrs);
+
+      var modelType = this.nestedKeys[key].model;
+      if (attrs instanceof modelType) {
+        this.attributes[key] = attrs;
+        return;
+      }
+      if (currentmodel) {
+        
+        currentmodel.set(attrs, options);
+        return;
+      }
+      this.attributes[key] = new modelType(attrs, options);      
+      this.trigger("change:" + key, this, this.attributes[key]);
+
+    },
+    /*
     set: function(key, val, options) {
+      
       var attrs;
       if (typeof key === 'object') {
         attrs = key;
         options = val;
       } else {
         (attrs = {})[key] = val;
-      }
-      if (attrs["container"]) {
-        this.attributes.container = new ContainerModel(attrs["container"], options);
-        delete attrs["container"];
+      }      
+      //console.log(attributes);
+      //console.log(this.attributes.name + " " + this.cid + attrs.container)
+
+      /*
+      if (attrs["container"]) { // we set container data
+        if ( !(attrs["container"] instanceof ContainerModel)) { // with a raw object, not a backbone object
+          console.log(attrs["container"])
+          if (!_.isEmpty(attrs["container"])) { // and this object is not empty
+            // do we already have a container object ?
+            //console.log(this);
+            //console.log(this.attributes);
+            //console.log(this._previousAttributes);
+
+            if (attributes) {
+              //if yes, let's try to update it
+              //console.log("already got a ContainerModel")
+              this.attributes.container.set(attrs["container"], options);
+            } else {
+              // let's create a new container.
+              //console.log("creating a ContainerModel")
+              attrs["container"] = new ContainerModel(attrs["container"], options);  
+            }            
+            attrs["useContainer"] = true;           
+          }
+          //delete attrs["container"];
+        }
       }
       if (attrs["fetch"]) {
         if (this.attributes.fetch === undefined) {
@@ -125,8 +216,22 @@ define([
         options
       ]);
     },
-
-
+    */
+    onChangeUseContainer: function(model, value, options) {
+      if (value) {
+        var container = model.get("container");
+        if (container===null) {
+          model.set("container", new ContainerModel());
+        }  
+      }      
+    },
+    onChangeHasContainer: function(model, value, options) {
+      if (value) {
+        model.set("useContainer", true);
+      } else {
+        model.set("useContainer", false);
+      }
+    },
     fetchStats: function() {
       var url = Route('scheduler', 'job', 'stat', this.get('name')),
           model = this;
@@ -219,19 +324,22 @@ define([
       if (this.get('schedule') === '-') {
         this.trigger('setSchedule');
       }
-
+      /*
       baseJSON = this.toData();
-      console.log(baseJSON);
+      if (baseJSON.useContainer === false) {
+        delete baseJSON["container"];
+      }
+      console.log(baseJSON);*/
       return _.pick.apply(null, ([baseJSON]).concat(this.getWhitelist()));
     },
 
     toData: function() {
       var data = Backbone.Model.prototype.toJSON.call(this);
-      console.log(data);
+      /*
       if (data["container"]) {
         data["container"] = this.get("container").toJSON();
-      }
-      data["fetch"] = this.get("fetch").toJSON();
+      }*/
+      //data["fetch"] = this.get("fetch").toJSON();
       return _.extend({}, data, {
         cid: this.cid,
         parentsList: this.get('parents').join(', '),

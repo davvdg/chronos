@@ -49,10 +49,42 @@
       </div>
       <span class="help-inline hide"></span>
     </div>
-    <div class="row-fluid control-group job-detail-row job-detail-container-view">
+    <div class="row-fluid control-group job-detail-row job-detail"
+         data-toggle="tooltip"
+         data-html=" "
+         data-title="Use a container for execution"
+         data-placement="bottom">
+      <div class="detail ">use container
+          <input class="display pull-right" type="checkbox" id="{{cid}}_useContainer" data-rv-checked="job.useContainer" checked="{{useContainer}}" disabled />
+          <input class="field pull-right" type="checkbox" id="{{cid}}_useContainer" data-rv-checked="job.useContainer" checked="{{useContainer}}" />
+      </div>
+      
+      <span class="help-inline hide"></span>
     </div>
-    <div class="row-fluid control-group job-detail-row job-detail-fetch-view">
+    <div class="job-detail-container-view">
     </div>
+    
+    
+        <div class=" row-fluid control-group job-detail-row job-detail"
+             data-toggle="tooltip"
+             data-title="Fetch Files"
+             data-html="true"
+             data-placement="bottom">
+          <div class="detail">Fetch Files</div>
+          <div>
+            <div class="display">
+              <div class="span9 " >uri</div>
+              <div class="span1 icon-cog" ></div>
+              <div class="span1 icon-briefcase"></div>
+              <div class="span1 icon-pushpin" ></div>
+            </div>
+            <ul class="job-detail-fetch-view unstyled">
+            </ul>
+          </div>
+          <span class="help-inline hide"></span>
+        </div>
+    
+
     <div class="row-fluid control-group job-detail-row job-detail parents-wrapper">
       <div class="span12">
         <div class="detail">Parents</div>

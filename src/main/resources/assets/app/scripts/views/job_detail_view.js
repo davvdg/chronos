@@ -99,13 +99,15 @@ function($,
 
       this.listenTo(this.model, {
         invalid: this.renderInvalid,
-        save: this.save
+        save: this.save,
+        "change:container": this.onChangeContainer,
+        "change:useContainer": this.onChangeUseContainer
       });
       this.containerView = null;
       if (this.model.get("container") !== null) {
         this.containerView=new ContainerView({model:this.model.get("container")});
       }
-      //this.listenTo(this.model, {"change:container": this.changeContainerView});
+      this.listenTo(this.model, {"change:container": this.changeContainerView});
       this.addRivets();
       this.addTooltips();
       this.$('.collapse').collapse();
@@ -123,14 +125,23 @@ function($,
         job: this.model
       };
     },
-
-    changeContainerView: function(msgmodel) {
-      if (this.containerView === null) {
-        this.containerView=new ContainerView({model:msgmodel.get("container")});
-        this.render();
+    onChangeContainer: function(model, value, options) {
+      if (value !== null) {
+        this.containerView=new ContainerView({model:value});
+        this.renderContainer();          
       }
     },
-
+    onChangeUseContainer: function(model, value, options) {
+      if (!value) {
+        if (this.containerView !==null) {
+          this.containerView.stopListening();
+          this.containerView.$el.empty();
+        }
+      } else {        
+        this.onChangeContainer(model, model.get("container"), options);
+        console.log(this.containerView);
+      }
+    },
     render: function() {
       var data = this.model.toData();
       data.cid = this.model.cid;
@@ -141,11 +152,14 @@ function($,
       this.addRivets();
       this.renderHeader();
       this.renderParents();
-      this.renderContainer();
-      this.renderFetchs();
+
+      
       this.renderStats();
       this.renderJobHistory();
       this.trigger('render');
+
+      this.renderContainer();
+      this.renderFetchs();
 
       if (this.$el.hasClass('edit-job')) {
         this.enableEdit();
@@ -170,7 +184,6 @@ function($,
     renderContainer: function() {
       if (this.containerView!==null) {
         var view = this.containerView;
-        console.log(view);
         return view.setElement(this.$('.job-detail-container-view')).render();
       }
     },
@@ -183,7 +196,7 @@ function($,
 
         this.fetchsView = view;        
       }
-      return view.setElement(this.$('.job-detail-fetch-list-view')).render();
+      return view.setElement(this.$('.job-detail-fetch-view')).render();
     },    
     renderHeader: function() {
       var view = this.headerView;

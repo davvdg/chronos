@@ -1,10 +1,14 @@
-<div>
-	<div>uri:</div>
-	<div>{{uri}}</div>
-	<div>executable</div>
-	<div>{{executable}}</div>
-	<div>extract</div>
-	<div>{{extract}}</div>
-	<div>cache</div>
-	<div>{{cache}}</div>
-</div>
+<li>
+	<div class="display">
+		<div class="span9">{{uri}}</div>
+		<div class="span1"><input type="checkbox" {{#if executable}}checked{{/if}} disabled></input></div>
+		<div class="span1"><input type="checkbox" {{#if extract}}checked{{/if}} disabled></input></div>
+		<div class="span1"><input type="checkbox" {{#if cache}}checked{{/if}} disabled></input></div>
+	</div>
+	<div class="field">
+		<div class="span9"><input class="job-input cmd command" value="{{uri}}"></input></div>
+		<div class="span1"><input type="checkbox" {{#if executable}}checked{{/if}}></input></div>
+		<div class="span1"><input type="checkbox" {{#if extract}}checked{{/if}}></input></div>
+		<div class="span1"><input type="checkbox" {{#if cache}}checked{{/if}}></input></div>
+	</div>
+</li>

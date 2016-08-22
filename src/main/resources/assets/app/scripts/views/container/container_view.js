@@ -9,7 +9,8 @@ define([
   'views/bound_view',
   'hbs!templates/container/container_view',
   'views/container/container_parameters_view',
-  'views/container/container_volumes_view'
+  'views/container/container_volumes_view',
+  'components/configured_rivets',
 ],
 function($,
          Backbone,
@@ -17,14 +18,15 @@ function($,
          BoundView,
          ContainerViewTpl,
          ContainerParametersView,
-         ContainerVolumesView) {
+         ContainerVolumesView,
+         rivets) {
   'use strict';
 
   var ContainerView;
 
-  ContainerView = Backbone.View.extend({
+  ContainerView = BoundView.extend({
     constructor: function ContainerView() {
-      Backbone.View.prototype.constructor.apply(this, arguments);
+      BoundView.prototype.constructor.apply(this, arguments);
     },
 
     className: 'row-fluid job-detail-view job-detail-container-view',
@@ -38,15 +40,18 @@ function($,
       this.listenTo(this.model, {
         'change': this.render
       });
+      this.addRivets();
     },
-
+    
     render: function() {
       var html = this.template(this.model.toJSON());
 
       this.$el.html(html);
+      this.addRivets();
+      this.trigger('render');
       this.parameterView.setElement(this.$('.container-parameter-list')).render();
       this.volumeView.setElement(this.$('.container-volumes-list')).render();  
-      this.trigger('render');
+      
 
       return this;
     }

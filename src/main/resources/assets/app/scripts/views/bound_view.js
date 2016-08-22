@@ -1,3 +1,11 @@
+/*
+ * Bound View.
+ * This view is a connector between Backbone and Rivets.js
+ * Rivets.js allows automatic binding of model properties and DOM elements.
+ * To use this view rather than typical Backbone View, one need to use data-rv tags in its templates
+ * for Rivets to be able to do the bindings.
+ */
+
 define([
   'jquery',
   'underscore',

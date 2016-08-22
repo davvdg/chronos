@@ -17,7 +17,11 @@ define([
   var BaseJobsCollection;
 
   BaseJobsCollection = Backbone.Collection.extend({
-
+    
+    set: function(models, options) {
+      Backbone.Collection.prototype.set.apply(this, [models, options]);
+      return this;
+    },
     model: function(attributes, options) {
       if (attributes.parents && attributes.parents.length) {
         return new DependentJobModel(attributes, options);

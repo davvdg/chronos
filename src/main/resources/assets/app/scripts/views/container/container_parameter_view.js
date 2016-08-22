@@ -2,19 +2,21 @@ define([
   'jquery',
   'backbone',
   'underscore',
+  'views/bound_view',
   'hbs!templates/container/container_parameter_view'
 ],
 function($,
          Backbone,
          _,
+         BoundView,
          ContainerParameterTpl) {
   'use strict';
 
   var ContainerParameterView;
 
-  ContainerParameterView = Backbone.View.extend({
+  ContainerParameterView = BoundView.extend({
     constructor: function ContainerParameterView() {
-      Backbone.View.prototype.constructor.apply(this, arguments);
+      BoundView.prototype.constructor.apply(this, arguments);
     },
 
     template: ContainerParameterTpl,
@@ -37,6 +39,7 @@ function($,
     toHTML: function() {
       var data = this.model.toJSON(),
           html = this.template(data);
+      this.addRivets();
       return html;
     }
   });

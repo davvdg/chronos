@@ -21,11 +21,11 @@ define([
         type:"Docker",
         image:"Ubuntu",
         network: "BRIDGE",
+        forcePullImage: true,
         volumes: new ContainerVolumeCollection(),
         parameters: new ContainerParametersCollection(),
       };
     },
-    
     set: function(key, val, options) {
       var attrs;
       if (typeof key === 'object') {
